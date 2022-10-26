@@ -28,13 +28,14 @@ public class TestSmartphoneApp {
 			System.out.println("##################################################################################");
 			// testAggiornamentoVersioneAppEDataAggiornamento(appServiceInstance);
 			System.out.println("##################################################################################");
-			//testInstallazioneApp(appServiceInstance, smartphoneServiceInstance);
+			// testInstallazioneApp(appServiceInstance, smartphoneServiceInstance);
 			System.out.println("##################################################################################");
-			testDisinstallazioneApp(appServiceInstance, smartphoneServiceInstance);
+			// testDisinstallazioneApp(appServiceInstance, smartphoneServiceInstance);
 			System.out.println("##################################################################################");
+			// testRimozioneSmartphoneAssociatoADueApp(appServiceInstance,
+			// smartphoneServiceInstance);
 			System.out.println("##################################################################################");
 
-			
 		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
@@ -147,7 +148,7 @@ public class TestSmartphoneApp {
 			throws Exception {
 
 		System.out.println(".......testInstallazioneApp inizio.............");
-		
+
 		// creo smartphone e lo inserisco
 		Smartphone smartphoneInstance = new Smartphone("Samsung", "Galaxy a5", 700, "Android 2.15.1");
 		smartphoneServiceInstance.inserisciNuovo(smartphoneInstance);
@@ -167,28 +168,30 @@ public class TestSmartphoneApp {
 		if (appInstance.getId() == null)
 			throw new RuntimeException("testAggiornamentoVersioneAppEDataAggiornamento FAILED: app non inserita! ");
 
-		//installazione della app nello smartphone
+		// installazione della app nello smartphone
 		smartphoneServiceInstance.aggiungiApp(smartphoneInstance, appInstance);
-		
-		//verifica corretta installazione ricaricando smartphone con strategia eager
-		Smartphone smartphoneReloaded = smartphoneServiceInstance.caricaSingoloElementoEagerApps(smartphoneInstance.getId());
-		
-		if(smartphoneReloaded.getApps().isEmpty())
+
+		// verifica corretta installazione ricaricando smartphone con strategia eager
+		Smartphone smartphoneReloaded = smartphoneServiceInstance
+				.caricaSingoloElementoEagerApps(smartphoneInstance.getId());
+
+		if (smartphoneReloaded.getApps().isEmpty())
 			throw new RuntimeException("testInstallazioneApp FAILED: installazione non avvenuta correttamente.");
-		
-		//reset tabelle
+
+		// reset tabelle
 		smartphoneServiceInstance.rimuoviTuttiGliSmartphoneDallaTabellaDiJoin();
 		smartphoneServiceInstance.rimuovi(smartphoneInstance.getId());
 		appServiceInstance.rimuovi(appInstance.getId());
-		
+
 		System.out.println(".......testInstallazioneApp fine: PASSED.............");
-		
+
 	}
-	
-	private static void testDisinstallazioneApp(AppService appServiceInstance, SmartphoneService smartphoneServiceInstance) throws Exception {
-		
-System.out.println(".......testDisinstallazioneApp inizio.............");
-		
+
+	private static void testDisinstallazioneApp(AppService appServiceInstance,
+			SmartphoneService smartphoneServiceInstance) throws Exception {
+
+		System.out.println(".......testDisinstallazioneApp inizio.............");
+
 		// creo smartphone e lo inserisco
 		Smartphone smartphoneInstance = new Smartphone("Samsung", "Galaxy a5", 700, "Android 2.15.1");
 		smartphoneServiceInstance.inserisciNuovo(smartphoneInstance);
@@ -208,32 +211,93 @@ System.out.println(".......testDisinstallazioneApp inizio.............");
 		if (appInstance.getId() == null)
 			throw new RuntimeException("testDisinstallazioneApp FAILED: app non inserita! ");
 
-		//installazione della app nello smartphone
+		// installazione della app nello smartphone
 		smartphoneServiceInstance.aggiungiApp(smartphoneInstance, appInstance);
-		
-		//verifica corretta installazione ricaricando smartphone con strategia eager
-		Smartphone smartphoneReloaded = smartphoneServiceInstance.caricaSingoloElementoEagerApps(smartphoneInstance.getId());
-		
-		if(smartphoneReloaded.getApps().isEmpty())
+
+		// verifica corretta installazione ricaricando smartphone con strategia eager
+		Smartphone smartphoneReloaded = smartphoneServiceInstance
+				.caricaSingoloElementoEagerApps(smartphoneInstance.getId());
+
+		if (smartphoneReloaded.getApps().isEmpty())
 			throw new RuntimeException("testDisinstallazioneApp FAILED: installazione non avvenuta correttamente.");
-		
-		//ora la disinstallo e verifico se effettivamente e' stata disinstallata
+
+		// ora la disinstallo e verifico se effettivamente e' stata disinstallata
 		appServiceInstance.rimuoviAppDallaTabellaDiJoin(appInstance.getId());
-		
-		//lo ricarico eager
+
+		// lo ricarico eager
 		smartphoneReloaded = smartphoneServiceInstance.caricaSingoloElementoEagerApps(smartphoneInstance.getId());
-		
-		//verifico
-		if(!smartphoneReloaded.getApps().isEmpty())
+
+		// verifico
+		if (!smartphoneReloaded.getApps().isEmpty())
 			throw new RuntimeException("testDisinstallazioneApp FAILED: disinstallazione non avvenuta correttamente.");
-		
-		//reset tabelle
+
+		// reset tabelle
 		smartphoneServiceInstance.rimuovi(smartphoneInstance.getId());
 		appServiceInstance.rimuovi(appInstance.getId());
-		
+
 		System.out.println(".......testDisinstallazioneApp fine: PASSED.............");
 
-		
+	}
+
+	private static void testRimozioneSmartphoneAssociatoADueApp(AppService appServiceInstance,
+			SmartphoneService smartphoneServiceInstance) throws Exception {
+
+		System.out.println(".......testRimozioneSmartphoneAssociatoADueApp inizio.............");
+
+		// creo smartphone e lo inserisco
+		Smartphone smartphoneInstance = new Smartphone("Samsung", "Galaxy a5", 700, "Android 2.15.1");
+		smartphoneServiceInstance.inserisciNuovo(smartphoneInstance);
+
+		// verifica corretto inserimento
+		if (smartphoneInstance.getId() == null)
+			throw new RuntimeException("testRimozioneSmartphoneAssociatoADueApp fallito: smartphone non inserito. ");
+
+		// creo due app e le inserisco
+		Date dataInstallazione = new SimpleDateFormat("dd-MM-yyyy").parse("03-01-2022");
+		Date dataAggiornamento = new SimpleDateFormat("dd-MM-yyyy").parse("19-05-2022");
+
+		App appInstance = new App("Instagram", dataInstallazione, dataAggiornamento, "6.12.2");
+		appServiceInstance.inserisciNuovo(appInstance);
+
+		// verifica corretto inserimento
+		if (appInstance.getId() == null)
+			throw new RuntimeException("testRimozioneSmartphoneAssociatoADueApp FAILED: app non inserita! ");
+
+		App appInstance1 = new App("Whatsapp", dataInstallazione, dataAggiornamento, "2.1.1");
+		appServiceInstance.inserisciNuovo(appInstance1);
+
+		// verifica corretto inserimento
+		if (appInstance1.getId() == null)
+			throw new RuntimeException("testRimozioneSmartphoneAssociatoADueApp FAILED: app non inserita! ");
+
+		// installazione delle app nello smartphone
+		smartphoneServiceInstance.aggiungiApp(smartphoneInstance, appInstance);
+		smartphoneServiceInstance.aggiungiApp(smartphoneInstance, appInstance1);
+
+		// verifica corretta installazione ricaricando smartphone con strategia eager
+		Smartphone smartphoneReloaded = smartphoneServiceInstance
+				.caricaSingoloElementoEagerApps(smartphoneInstance.getId());
+
+		if (smartphoneReloaded.getApps().isEmpty())
+			throw new RuntimeException(
+					"testRimozioneSmartphoneAssociatoADueApp FAILED: installazione non avvenuta correttamente.");
+
+		// rimozione smartphone e verifica rimozione
+		smartphoneServiceInstance.rimuoviSmartphoneDallaTabellaDiJoin(smartphoneInstance.getId());
+
+		App appReloaded = appServiceInstance.caricaSingoloElementoEagerSmartphones(appInstance.getId());
+
+		if (!appReloaded.getSmartphones().isEmpty())
+			throw new RuntimeException(
+					"testRimozioneSmartphoneAssociatoADueApp FAILED: si e'verificato un errore durante la rimozione dello smartphone.");
+
+		// reset tabelle
+		smartphoneServiceInstance.rimuovi(smartphoneInstance.getId());
+		appServiceInstance.rimuovi(appInstance.getId());
+		appServiceInstance.rimuovi(appInstance1.getId());
+
+		System.out.println(".......testRimozioneSmartphoneAssociatoADueApp fine: PASSED.............");
+
 	}
 
 }
