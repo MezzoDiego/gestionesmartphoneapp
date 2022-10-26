@@ -24,6 +24,7 @@ public class TestSmartphoneApp {
 			System.out.println("##################################################################################");
 			//testInserimentoNuovaApp(appServiceInstance);
 			System.out.println("##################################################################################");
+			//testAggiornamentoVersioneOSSmartphone(smartphoneServiceInstance);
 			System.out.println("##################################################################################");
 			System.out.println("##################################################################################");
 
@@ -73,5 +74,34 @@ public class TestSmartphoneApp {
 
 		System.out.println(".......testInserimentoNuovaApp fine: PASSED.............");
 	}
+	
+	private static void testAggiornamentoVersioneOSSmartphone(SmartphoneService smartphoneServiceInstance) throws Exception{
+		System.out.println(".......testAggiornamentoVersioneOSSmartphone inizio.............");
+
+		//creo smartphone e lo inserisco
+		Smartphone smartphoneInstance = new Smartphone("Samsung", "Galaxy a5", 700, "Android 2.15.1");
+		smartphoneServiceInstance.inserisciNuovo(smartphoneInstance);
+		
+		//verifica corretto inserimento
+		if (smartphoneInstance.getId() == null)
+			throw new RuntimeException("testAggiornamentoVersioneOSSmartphone fallito: smartphone non inserito. ");
+		
+		//esecuzione query aggiornamento
+		String vecchiaVersione = smartphoneInstance.getVersioneOS();
+		smartphoneInstance.setVersioneOS("Android 2.15.2");
+		smartphoneServiceInstance.aggiorna(smartphoneInstance);
+		
+		if(smartphoneInstance.getVersioneOS().equals(vecchiaVersione))
+			throw new RuntimeException("testAggiornamentoVersioneOSSmartphone FAILED: si e'verificato un errore durante la modifica della versione.");
+		
+		//reset tabella
+		smartphoneServiceInstance.rimuovi(smartphoneInstance.getId());
+		
+		System.out.println(".......testAggiornamentoVersioneOSSmartphone fine.............");
+
+
+	}
+	
+	
 
 }
