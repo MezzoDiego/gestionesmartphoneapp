@@ -3,6 +3,7 @@ package it.prova.gestionesmartphoneapp.dao.app;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import it.prova.gestionesmartphoneapp.model.App;
 
@@ -51,6 +52,14 @@ public class AppDAOImpl implements AppDAO {
 		}
 		entityManager.remove(entityManager.merge(appInstance));
 
+	}
+
+	@Override
+	public App findByIdFetchingSmartphones(Long id) throws Exception {
+		TypedQuery<App> query = entityManager
+				.createQuery("select a FROM App a left join fetch a.smartphones s where a.id = :idApp", App.class);
+		query.setParameter("idApp", id);
+		return query.getResultList().stream().findFirst().orElse(null);
 	}
 
 }
