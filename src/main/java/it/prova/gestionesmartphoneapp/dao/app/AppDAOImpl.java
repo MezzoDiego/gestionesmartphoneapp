@@ -62,4 +62,10 @@ public class AppDAOImpl implements AppDAO {
 		return query.getResultList().stream().findFirst().orElse(null);
 	}
 
+	@Override
+	public void deleteAppFromJoinTable(Long idApp) throws Exception {
+		entityManager.createNativeQuery("delete from smartphone_app where app_id = ?1").setParameter(1, idApp).executeUpdate();
+		
+	}
+
 }

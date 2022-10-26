@@ -70,4 +70,10 @@ public class SmartphoneDAOImpl implements SmartphoneDAO {
 		return query.getResultList().stream().findFirst().orElse(null);
 	}
 
+	@Override
+	public void deleteSmartphoneFromJoinTable(Long idSmartphone) throws Exception {
+		entityManager.createNativeQuery("delete from smartphone_app where smartphone_id = ?1").setParameter(1, idSmartphone).executeUpdate();
+		
+	}
+
 }

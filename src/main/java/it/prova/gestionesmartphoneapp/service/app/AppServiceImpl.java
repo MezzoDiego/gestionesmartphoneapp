@@ -193,4 +193,30 @@ public class AppServiceImpl implements AppService {
 
 	}
 
+	@Override
+	public void rimuoviAppDallaTabellaDiJoin(Long idApp) throws Exception {
+		// questo è come una connection
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			appDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			appDAO.deleteAppFromJoinTable(idApp);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+
+	}
+
 }

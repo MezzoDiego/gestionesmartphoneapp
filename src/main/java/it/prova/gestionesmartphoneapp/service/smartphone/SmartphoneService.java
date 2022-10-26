@@ -22,6 +22,8 @@ public interface SmartphoneService {
 	
 	public void rimuoviTuttiGliSmartphoneDallaTabellaDiJoin() throws Exception;
 	
+	public void rimuoviSmartphoneDallaTabellaDiJoin(Long idSmartphone) throws Exception;
+
 	public void aggiungiApp(Smartphone smartphoneInstance, App appInstance) throws Exception;
 	
 	// per injection

@@ -22,6 +22,8 @@ public interface AppService {
 	
 	public void aggiungiSmartphone(App appInstance, Smartphone smartphoneInstance) throws Exception;
 	
+	public void rimuoviAppDallaTabellaDiJoin(Long idApp) throws Exception;
+	
 	// per injection
 		public void setAppDAO(AppDAO appDAO);
 }

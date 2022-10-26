@@ -219,4 +219,30 @@ public class SmartphoneServiceImpl implements SmartphoneService {
 
 	}
 
+	@Override
+	public void rimuoviSmartphoneDallaTabellaDiJoin(Long idSmartphone) throws Exception {
+		// questo è come una connection
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			smartphoneDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			smartphoneDAO.deleteSmartphoneFromJoinTable(idSmartphone);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+
+	}
+
 }

@@ -5,5 +5,7 @@ import it.prova.gestionesmartphoneapp.model.App;
 
 public interface AppDAO extends IBaseDAO<App>{
 	public App findByIdFetchingSmartphones(Long id) throws Exception;
+	
+	public void deleteAppFromJoinTable(Long idApp) throws Exception;
 
 }
